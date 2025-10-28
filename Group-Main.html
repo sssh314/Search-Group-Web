@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <script>
+        function Onmousein(button){
+            button.style.backgroundColor = "#404040";
+        }
+        function Onmouseout(button){
+            button.style.backgroundColor = "#212121";
+        }
+    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스터디 모임 플랫폼</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #212121;
+  }
+
+  header {
+    background-color: #212121;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  header h1 {
+    margin: 0;
+    
+  }
+
+  header button {
+    background-color: #212121;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 0 20px;
+  }
+  .top-controls {
+    display: flex;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .group-top{
+    display: flex;
+    flex: 1;
+    color: white;
+    size: 1rem;
+    justify-content:space-between;
+  }
+  .group-top h1{
+    margin: 0;
+  }
+  .group-top button{
+    background-color: #212121;
+    color: white;
+    border-radius: 20px;
+    border: none;
+    padding: 10px 15px;
+  }
+  .announcement {
+    background-color: #171717;
+    padding: 15px;
+    min-height: 100px;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+  }
+  .announcement p{
+    margin-top: 0;
+    color: white;
+  }
+  .noticeboard{
+    display: grid;
+    grid-template-columns: 200px 1fr 200px;
+    grid-template-rows: 375px;
+    gap: 20px;
+  }
+  .people{
+    background-color: #171717;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 15px;
+  }
+  .people h3{
+    margin-top: 0;
+    color: white;
+  }
+  .note{
+    background-color: #171717;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 15px;
+  }
+  .note h3{
+    margin-top: 0;
+    color: white;
+  }
+  .plan{
+    background-color: #171717;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 15px;
+  }
+  .plan h3{
+    margin-top: 0;
+    color: white;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>모임 찾기</h1>
+  <button onmouseover="Onmousein(this)" onmouseout="Onmouseout(this)">마이페이지</button>
+</header>
+
+<div class="container">
+    <div class="top-controls">
+        <div class="group-top">
+            <h1>모임 이름</h1>
+            <button onmouseover="Onmousein(this)" onmouseout="Onmouseout(this)">가입</button>
+        </div>
+    </div>
+    <div class="announcement">
+        <p>공지사항</p>
+    </div>
+    <div class="noticeboard">
+        <div class="people">
+            <h3>인원</h3>
+        </div>
+        <div class="note">
+            <h3>의견</h3>
+        </div>
+        <div class="plan">
+            <h3>일정</h3>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

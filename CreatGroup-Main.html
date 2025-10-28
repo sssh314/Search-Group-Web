@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <script>
+        function Onmousein(button){
+            button.style.backgroundColor = "#404040";
+        }
+        function Onmouseout(button){
+            button.style.backgroundColor = "#212121";
+        }
+    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스터디 모임 플랫폼</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #212121;
+  }
+
+  header {
+    background-color: #212121;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  header h1 {
+    margin: 0;
+    
+  }
+
+  header button {
+    background-color: #212121;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>모임 찾기</h1>
+  <button onmouseover="Onmousein(this)" onmouseout="Onmouseout(this)">마이페이지</button>
+</header>
+
+<div class="container">
+    
+</div>
+
+</body>
+</html>

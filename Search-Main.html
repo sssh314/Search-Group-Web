@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <script>
+        function Onmousein(button){
+            button.style.backgroundColor = "#404040";
+        }
+        function Onmouseout(button){
+            button.style.backgroundColor = "#212121";
+        }
+        function cardmouseout(button){
+            button.style.backgroundColor = "#171717";
+        }
+    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스터디 모임 플랫폼</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #212121;
+  }
+
+  header {
+    background-color: #212121;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  header h1 {
+    margin: 0;
+    
+  }
+
+  header button {
+    background-color: #212121;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 20px;
+  }
+
+  .top-controls {
+    display: flex;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .search-box {
+    display: flex;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .search-box input {
+    flex: 1;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #404040;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    background: #303030;
+  }
+
+  .search-box button {
+    font-size: 15px;
+    padding: 10px 20px;
+    border: none;
+    background-color: white;
+    color: #000000;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  .buttons button {
+    background-color: #212121;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .group-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+
+  .group-card {
+    background-color: #171717;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  .group-card h3 {
+    margin-top: 0;
+    color: #ffffff;
+  }
+
+  .group-card p {
+    color: #909090;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>모임 찾기</h1>
+  <button onmouseover="Onmousein(this)" onmouseout="Onmouseout(this)">마이페이지</button>
+</header>
+
+<div class="container">
+  <div class="top-controls">
+    <div class="search-box">
+      <input type="text" placeholder="모임 검색...">
+      <button>검색</button>
+    </div>
+    <div class="buttons">
+      <button onmouseover="Onmousein(this)" onmouseout="Onmouseout(this)">모임 생성</button>
+    </div>
+  </div>
+
+  <div class="group-list">
+    <div class="group-card" onmouseover="Onmousein(this)" onmouseout="cardmouseout(this)">
+      <h3>점심 같이 먹을 사람</h3>
+      <p>토요일 12시, 전주대</p>
+    </div>
+    <div class="group-card" onmouseover="Onmousein(this)" onmouseout="cardmouseout(this)">
+      <h3>Python 초보 모임</h3>
+      <p>수요일 6시, 전주대</p>
+    </div>
+    <div class="group-card" onmouseover="Onmousein(this)" onmouseout="cardmouseout(this)">
+      <h3>영화 보자</h3>
+      <p>금요일 5시, 롯데시네마</p>
+    </div>
+    <div class="group-card" onmouseover="Onmousein(this)" onmouseout="cardmouseout(this)">
+      <h3>게임 개발</h3>
+      <p>일요일 3시, 공학 323</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

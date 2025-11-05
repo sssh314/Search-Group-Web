@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <script>
+        function Onmousein(button){
+            button.style.backgroundColor = "#404040";
+        }
+        function Onmouseout(button){
+            button.style.backgroundColor = "#212121";
+        }
+    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스터디 모임 플랫폼</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #212121;
+  }
+
+  header {
+    background-color: #212121;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  header h1 {
+    margin: 0;
+    
+  }
+
+  header button {
+    background-color: #212121;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .container {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 0 20px;
+  }
+  .top-controls {
+    display: flex;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .group-top{
+    display: flex;
+    flex: 1;
+    color: white;
+    size: 1rem;
+    justify-content:space-between;
+  }
+  .group-top h1{
+    margin: 0;
+  }
+  .group-top button{
+    background-color: #212121;
+    color: white;
+    border-radius: 20px;
+    border: none;
+    padding: 10px 15px;
+  }
+  .group-setting{
+    color: white;
+    margin-top: 60px;
+  }
+  .group-name{
+    margin-bottom: 30px;
+    background-color: #171717;
+    border-radius: 15px;
+    padding: 20px;
+  }
+  .group-name h3{
+    margin-top: 0;
+  }
+  .group-person{
+    margin-bottom: 30px;
+    background-color: #171717;
+    border-radius: 15px;
+    padding: 15px;
+  }
+  .group-person h3{
+    margin-top: 0;
+  }
+  .group-time{
+    margin-bottom: 30px;
+    background-color: #171717;
+    border-radius: 15px;
+    padding: 15px;
+  }
+  .group-time h3{
+    margin-top: 0;
+  }
+  .group-day{
+    margin-bottom: 30px;
+    background-color: #171717;
+    border-radius: 15px;
+    padding: 15px;
+  }
+  .group-day h3{
+    margin-top: 0;
+  }
+  .group-place{
+    margin-bottom: 30px;
+    background-color: #171717;
+    border-radius: 15px;
+    padding: 15px;
+  }
+  .group-place h3{
+    margin-top: 0;
+  }
+  .group-tag{
+    margin-bottom: 30px;
+    background-color: #171717;
+    border-radius: 15px;
+    padding: 15px;
+  }
+  .group-tag h3{
+    margin-top: 0;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>모임 찾기</h1>
+  <button onmouseover="Onmousein(this)" onmouseout="Onmouseout(this)">마이페이지</button>
+</header>
+
+<div class="container">
+    <div class="top-controls">
+        <div class="group-top">
+            <h1>모임 만들기</h1>
+            <button onmouseover="Onmousein(this)" onmouseout="Onmouseout(this)">완료</button>
+        </div>
+    </div>
+    <div class="group-setting">
+      <div class="group-name">
+        <h3>모임 이름</h3>
+        <input type="text">
+      </div>
+      <div class="group-person">
+        <h3>모임 인원 수</h3>
+        <input type="number">
+      </div>
+      <div class="group-time">
+        <h3>모임 시간</h3>
+        <input type="time">
+      </div>
+      <div class="group-day">
+        <h3>모임 날짜</h3>
+        <input type="date">
+      </div>
+      <div class="group-place">
+        <h3>모임 장소</h3>
+        <input type="text">/*이거 바꿔야함 위치기반기능*/
+      </div>
+      <div class="group-tag">
+        <h3>모임 태그</h3>
+        <input type="text"> /*이거 버튼같은걸로 누르면 텍스트 추가 가능*/
+      </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -11,6 +11,14 @@
         function cardmouseout(button){
             button.style.backgroundColor = "#171717";
         }
+        window.onload = function(){
+            const userName = localStorage.getItem("user_name");
+            const footerText = document.getElementById("footer-user");
+
+            if(userName){
+                footerText.textContent = `사용자: ${userName}`;
+            }
+        }
     </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -121,6 +129,17 @@
   .group-card p {
     color: #909090;
   }
+  footer {
+    text-align: left;
+    color: #b0b0b0;
+    padding: 15px;
+    font-size: 0.9rem;
+    background-color: #171717;
+    border-top: 1px solid #303030;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
 </style>
 </head>
 <body>
@@ -160,6 +179,10 @@
     </div>
   </div>
 </div>
+
+<footer>
+  <span id="footer-user">로그인 정보 없음</span>
+</footer>
 
 </body>
 </html>

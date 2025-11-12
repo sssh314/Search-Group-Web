@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <script>
+        function Onmousein(button){
+            button.style.backgroundColor = "#404040";
+        }
+        function Onmouseout(button){
+            button.style.backgroundColor = "#212121";
+        }
+        function cardmouseout(button){
+            button.style.backgroundColor = "#171717";
+        }
+
+        function createGroup(){
+          location.href = '2-2CreateGroup-Main.html';
+        }
+
+        window.onload = function(){
+          //페이지 하단 이름 
+          const userName = localStorage.getItem("user_name");
+          const footerText = document.getElementById("footer-user");
+
+          if(userName){
+              footerText.textContent = `사용자: ${userName}`;
+          } else {
+              footerText.textContent = "로그인 정보 없음";
+          }
+          
+          //그룹 카드 
+          const groupData = JSON.parse(localStorage.getItem("created_group"));
+          const groupList = document.querySelector(".group-list");
+          groupList.innerHTML = ""; //기존 카드 제거 
+
+          if(groupData){
+            const card = document.createElement("div");
+            card.className = "group-card";
+            card.innerHTML = `<h3>${groupData.name}</h3>
+                              <p>${groupData.day} ${groupData.time}, ${groupData.place}</p>`;
+            groupList.appendChild(card);                 
+          }
+        };
+
+    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스터디 모임 플랫폼</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #212121;
+  }
+
+  header {
+    background-color: #212121;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  header h1 {
+    margin: 0;
+    
+  }
+
+  header button {
+    background-color: #212121;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 20px;
+  }
+
+  .top-controls {
+    display: flex;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .search-box {
+    display: flex;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .search-box input {
+    flex: 1;
+    padding: 10px;
+    font-size: 1rem;
+    color: white;
+    border: 1px solid #404040;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    background: #303030;
+  }
+
+  .search-box button {
+    font-size: 15px;
+    padding: 10px 20px;
+    border: none;
+    background-color: white;
+    color: #000000;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  .buttons button {
+    background-color: #212121;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .group-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+
+  .group-card {
+    background-color: #171717;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  .group-card h3 {
+    margin-top: 0;
+    color: #ffffff;
+  }
+
+  .group-card p {
+    color: #909090;
+  }
+
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: left;
+    color: #b0b0b0;
+    padding: 15px;
+    font-size: 0.9rem;
+    background-color: #171717;
+    border-top: 1px solid #303030;
+  }
+
+</style>
+</head>
+<body>
+
+<header>
+  <h1>모임 찾기</h1>
+  <button id="myBtn" onmouseover="Onmousein(this)" onmouseout="Onmouseout(this)">마이페이지</button>
+</header>
+
+<div class="container">
+  <div class="top-controls">
+    <div class="search-box">
+      <input type="text" placeholder="모임 검색...">
+      <button>검색</button>
+    </div>
+    <div class="buttons">
+      <button onclick="createGroup()" onmouseover="Onmousein(this)" onmouseout="Onmouseout(this)">모임 생성</button>
+    </div>
+  </div>
+
+  <div class="group-list">
+    
+  </div>
+</div>
+
+<footer>
+  <span id="footer-user">로그인 정보 없음</span>
+</footer>
+
+</body>
+</html>

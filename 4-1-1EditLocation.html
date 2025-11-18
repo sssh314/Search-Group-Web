@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <script 
+        defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgZb5wneiMCrcq4LkvGIr0W1nvAwwn4Xs&callback=initMap"></script>
+    <script>
+        // url에서 group_id 읽기 
+        function getGroupId(){
+            const params = new URLSearchParams(location.search);
+            return params.get("group_id");
+        }
+
+        // 이전 페이지로 돌아가기 
+        function goBack() {
+            const groupId = getGroupId();
+            location.href = `4-1Group-Setting.html?group_id=${groupId}`;
+        }
+
+        function initMap(){
+            const map = new google.maps.Map(document.getElementById("map-place"), {
+                center: { lat: 37.5665, lng: 126.9780 },
+                zoom: 15
+            });
+
+            const geocoder = new google.maps.Geocoder();
+            let marker;
+
+            // groups 배열 가져오기
+            let groups = JSON.parse(localStorage.getItem("groups")) || [];
+            const groupId = getGroupId();
+            const groupData = groups.find(g => g.id == groupId);
+
+            if(!groupData){
+                alert("해당 그룹을 찾을 수 없습니다.");
+                return;
+            }
+
+            // 기존 위치 값이 있으면 표시
+            if(groupData.location && groupData.lat && groupData.lng){
+                document.getElementById("location").value = groupData.location;
+                const position = { lat: parseFloat(groupData.lat), lng: parseFloat(groupData.lng) };
+                marker = new google.maps.Marker({ position, map });
+                map.setCenter(position);
+            }
+
+            map.addListener("click", (e) => {
+                if(!marker) marker = new google.maps.Marker({ position: e.latLng, map: map });
+                else marker.setPosition(e.latLng);
+
+                geocoder.geocode({ location: e.latLng }, (results, status) => {
+                    if(status === "OK" && results[0]){
+                        const address = results[0].formatted_address;
+
+                        // 주소 input 표시
+                        document.getElementById("location").value = address;
+
+                        // groups 배열 바로 업데이트
+                        groupData.location = address;
+                        groupData.lat = e.latLng.lat();
+                        groupData.lng = e.latLng.lng();
+
+                        // localStorage에 다시 저장
+                        localStorage.setItem("groups", JSON.stringify(groups));
+                        console.log("그룹 위치 저장 완료:", address);
+                    }
+                });
+            });
+        }
+    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스터디 모임 플랫폼</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #212121;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+  }
+  #map-place {
+    width: 100%;
+    flex: 1; /* 화면의 남은 공간을 채움 */
+    min-height: 400px;
+  }
+  #location {
+    width: 95%;
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 1rem;
+    color: white;
+    border: 1px solid #404040;
+    border-radius: 10px;
+    outline: none;
+    background: #303030;
+  }
+  #back-button {
+    width: 95%;
+    padding: 10px;
+    font-size: 1rem;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    background-color: #404040;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  #back-button:hover {
+    background-color: #606060;
+  }
+</style>
+</head>
+<body>
+    <div id="map-place"></div>
+    <input id="location" type="text" placeholder="선택한 장소 주소">
+    <button id="back-button" onclick="goBack()">완료</button>
+</body>
+</html>

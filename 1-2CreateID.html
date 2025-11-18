@@ -2,26 +2,38 @@
 <html lang="ko">
 <head>
     <script>
-        function create_id(){
-          const id = document.querySelector('#id');
-          const pw = document.querySelector('#pw');
-          const r_pw = document.querySelector('#r_pw');
-          const name = document.querySelector('#name');
+        function create_id() {
+            const id = document.querySelector('#id').value;
+            const pw = document.querySelector('#pw').value;
+            const r_pw = document.querySelector('#r_pw').value;
+            const name = document.querySelector('#name').value;
 
-          if(id.value == "" || pw.value == "" || r_pw.value == ""){
-            alert("회원가입을 할 수 없습니다.")
-          }else{
-            if(pw.value != r_pw.value){
-              alert("비밀번호가 일치하지 않습니다.")
-            }else{
-              localStorage.setItem("user_id", id.value);
-              localStorage.setItem("user_pw", pw.value);
-              localStorage.setItem("user_name", name.value);
-
-              alert("회원가입이 완료되었습니다.")
-              location.href = '1-1Login-Page.html';
+            if (id === "" || pw === "" || r_pw === "" || name === "") {
+                alert("회원가입을 할 수 없습니다. 모든 항목을 입력해주세요.");
+                return;
             }
-          }
+
+            if (pw !== r_pw) {
+                alert("비밀번호가 일치하지 않습니다.");
+                return;
+            }
+
+            // 기존 users 배열 가져오기 (없으면 빈 배열)
+            const users = JSON.parse(localStorage.getItem("users")) || [];
+
+            // 아이디 중복 체크
+            if (users.some(user => user.id === id)) {
+                alert("이미 존재하는 아이디입니다.");
+                return;
+            }
+
+            const newUser = { id: id, pw: pw, name: name };
+            users.push(newUser);
+
+            localStorage.setItem("users", JSON.stringify(users));
+
+            alert("회원가입이 완료되었습니다.");
+            location.href = '1-1Login-Page.html';
         }
 
         function back(){

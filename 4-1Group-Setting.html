@@ -13,13 +13,55 @@
           location.href = "2-1Search-Main.html";
         }
         function selectLocation() {
-          window.location.href = "2-2-1SelectLocation.html";
+            const groupId = getGroupIdFromURL();
+            window.location.href = `4-1-1EditLocation.html?group_id=${groupId}`;
         }
 
         // 기존 그룹 배열 가져오기
-            let groups = JSON.parse(localStorage.getItem("groups")) || [];
+        let groups = JSON.parse(localStorage.getItem("groups")) || [];
 
-        function createGroup(){
+        // url에서 group_id 가져오기 
+        function getGroupIdFromURL(){
+            const params = new URLSearchParams(location.search);
+            return params.get("group_id");
+        }
+
+        window.onload = function(){
+            // 그룹 ID 가져오기
+            const groupId = getGroupIdFromURL();
+            if(!groupId){
+                alert("잘못된 접근입니다. group_id가 없습니다.");
+                return;
+            }
+
+            // 해당 그룹 찾기 
+            let groupData = groups.find(g => g.id == groupId);
+
+            if(!groupData){
+                alert("해당 그룹을 찾을 수 없습니다.");
+                return;
+            }
+
+            // group에 저장된 값으로 채우기 
+            document.querySelector(".group-name input").value = groupData.name || "";
+            document.querySelector(".group-maxPeople input").value = groupData.maxPeople || "";
+            document.querySelector(".group-time input").value = groupData.time || "";
+            document.querySelector(".group-date input").value = groupData.date || "";
+            document.querySelector(".group-location input").value = groupData.location || "";
+            document.querySelector(".group-tag input").value = groupData.tag || "";
+        }
+
+        // 저장 
+        function saveEditedGroup(){
+            const groupId = getGroupIdFromURL();
+            let groups = JSON.parse(localStorage.getItem("groups")) || [];
+            let groupData = groups.find(g => g.id == groupId);
+
+            if(!groupData){
+                alert("해당 그룹을 찾을 수 없습니다.");
+                return;
+            }
+
             const name = document.querySelector(".group-name input").value.trim();
             const maxPeople = Number(document.querySelector(".group-maxPeople input").value.trim());
             const time = document.querySelector(".group-time input").value.trim();
@@ -36,35 +78,23 @@
                 return;
             }
 
-            const groupData = { 
-                name, people: [], maxPeople, time, date, location, tag,
-                lat: localStorage.getItem("selected_group_lat") || "",
-                lng: localStorage.getItem("selected_group_lng") || "",
-                creatorId: localStorage.getItem("user_id") || "",
-                creator: localStorage.getItem("user_name") || "",
-                id: Date.now() // 그룹 고유 ID
-            };
+            groupData.name = name;
+            groupData.maxPeople = maxPeople;
+            groupData.time = time;
+            groupData.date = date; 
+            groupData.location = location; 
+            groupData.tag = tag;
 
-            groups.push(groupData); // 새 그룹 추가
+            
+
             localStorage.setItem("groups", JSON.stringify(groups)); // 다시 저장
 
             alert("저장되었습니다.")
-            
         }   
 
         function success(){
-          groups.forEach(g => {
-              location.href = `3-1Group-Main.html?group_id=${g.id}`;
-          });
-        }
-
-        window.onload = function() {
-            const locationInput = document.getElementById("group-location-input");
-            const savedAddress = localStorage.getItem("selected_group_location");
-            if(savedAddress){
-                locationInput.value = savedAddress;
-            }
-            localStorage.setItem("group_creator", localStorage.getItem("user_id")); // 모임 만들 때
+            const groupId = getGroupIdFromURL();
+            location.href = `3-1Group-Main.html?group_id=${groupId}`;
 
         }
     </script>
@@ -263,9 +293,9 @@
 <div class="container">
     <div class="top-controls">
         <div class="group-top">
-            <h1>모임 만들기</h1>
+            <h1>모임 편집</h1>
             <div>
-              <button onclick="createGroup()" onmouseover="Onmousein(this)" onmouseout="Onmouseout(this)">저장</button>
+              <button onclick="saveEditedGroup()" onmouseover="Onmousein(this)" onmouseout="Onmouseout(this)">저장</button>
               <button onclick="success()" onmouseover="Onmousein(this)" onmouseout="Onmouseout(this)">완료</button>
             </div>
         </div>

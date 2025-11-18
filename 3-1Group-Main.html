@@ -9,31 +9,117 @@
         function Onmouseout(button){
             button.style.backgroundColor = "#212121";
         }
+        function goMain(){
+          location.href = "2-1Search-Main.html";
+        }
+        function getGroupIdFromURL(){
+            const params = new URLSearchParams(location.search);
+            return params.get("group_id");
+        }
         window.onload = function() {
-          const user = localStorage.getItem("user_id");
-          const groupCreator = localStorage.getItem("group_creator"); // 모임 만든 사람 ID, 그룹 만들 때 생성되는 거임
+          const userName = localStorage.getItem("user_name");
+          const userId = localStorage.getItem("user_id");
+
+          // groups 배열 
+          let groups = JSON.parse(localStorage.getItem("groups")) || [];
+
+          // url에서 group_id 가져옴
+          const params = new URLSearchParams(location.search);
+          const groupId = params.get("group_id");
+
+          // url에서 찾은 id와 groups에서 일치하는 id를 찾아서 groupData에 저장 
+          let groupData = groups.find(g => g.id == groupId);
+
+          if(!groupData){
+            alert("존재하지 않는 모임입니다.");
+            return;
+          }
+
           const actionBtn = document.getElementById("actionBtn");
 
-          // 로그인한 사용자 이름 표시용 (옵션)
-          console.log("현재 로그인한 사용자:", user);
-
-          if (user === groupCreator) {
-            // 모임 만든 사람인 경우
-            actionBtn.textContent = "모임 편집";
-            actionBtn.onclick = function() {
-              alert("모임 설정 페이지로 이동합니다.");
-              // location.href = "Edit-Group.html";
-            };
-          } else {
-            // 가입자 또는 비회원인 경우
-            actionBtn.textContent = "가입";
-            actionBtn.onclick = function() {
-              alert("모임에 가입되었습니다!");
-              // 실제 가입 로직 여기에 추가
-            };
+          let people = Array.isArray(groupData.people) ? groupData.people : [];
+          //console.log("People =", people);
+          const maxPeople = parseInt(groupData.maxPeople);
+          //console.log("maxPeople =", groupData.maxPeople);
+          // groupData.people이 없다면 
+          if (isNaN(maxPeople)) {
+              alert("최대 인원 정보가 없습니다. 모임 정보가 잘못되었습니다.");
+              return;
           }
-        };
 
+          // 그룹 만든 사람의 이름을 인원(people)에 등록 
+          if (people.length === 0){
+            if(groupData.creator) people.push(groupData.creator);
+          }
+
+          // 인원이 가입하거나 탈퇴하면 groups를 다시 저장 
+          function saveGroups(){
+            localStorage.setItem("groups", JSON.stringify(groups));
+          }
+
+          function updateButton(){
+            document.getElementById("groupNameTitle").textContent = groupData.name;
+            document.getElementById("planTime").textContent = groupData.time;
+            document.getElementById("planLocation").textContent = groupData.location;
+            document.getElementById("planDate").textContent = groupData.date;
+
+            //인원 표시 
+            const groupPeopleDiv = document.getElementById("groupPeople");
+            groupPeopleDiv.innerHTML = ""; // 기존 내용 초기화
+
+            if(people.length > 0){
+                people.forEach(name => {
+                    const personDiv = document.createElement("div");
+                    personDiv.textContent = name;
+                    // 블럭 스타일
+                    personDiv.style.backgroundColor = "#404040";
+                    personDiv.style.color = "white";
+                    personDiv.style.padding = "10px";
+                    personDiv.style.borderRadius = "8px";
+                    personDiv.style.margin = "5px 0";
+                    personDiv.style.width = "100%"; // 글자 길이만큼 폭
+                    personDiv.style.boxSizing = "border-box";
+                    groupPeopleDiv.appendChild(personDiv);
+                });
+            } else {
+                groupPeopleDiv.textContent = "모임 인원 없음";
+            }
+
+            //사용자에 따른 버튼 변경 
+            if(userId === groupData.creatorId){
+              actionBtn.textContent = "모임 편집";
+              actionBtn.onclick = function() {
+                location.href = `4-1Group-Setting.html?group_id=${groupId}`; 
+              };
+            } else if (people.includes(userName)){
+              actionBtn.textContent = "탈퇴";
+              actionBtn.onclick = function(){
+                // people에서 현재 사용자의 이름과 같지 않은 사람만 남긴다. -> 이름 중복시 오류 가능 
+                people = people.filter(name => name !== userName);
+                //남은 이름 저장 
+                groupData.people = people;
+                saveGroups();
+                alert("모임에서 탈퇴했습니다.");
+                updateButton();
+              };
+            } else{
+              actionBtn.textContent = "가입";
+              actionBtn.onclick = function(){
+                if(people.length >= maxPeople){
+                  alert("정원이 가득 찼습니다.");
+                  return;
+                }
+                people.push(userName);
+                groupData.people = people;
+                saveGroups();
+                alert(`${userName}님이 모임에 가입했습니다.`);
+                updateButton();
+              };
+            }
+
+          }
+          updateButton();
+        };
     </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,7 +142,7 @@
 
   header h1 {
     margin: 0;
-    
+    cursor: pointer;
   }
 
   header button {
@@ -96,6 +182,7 @@
     border-radius: 20px;
     border: none;
     padding: 10px 15px;
+    cursor: pointer;
   }
   .announcement {
     background-color: #171717;
@@ -135,29 +222,43 @@
     margin-top: 0;
     color: white;
   }
-  .plan{
+  .plan {
     background-color: #171717;
     border-radius: 15px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     padding: 15px;
-  }
-  .plan h3{
-    margin-top: 0;
     color: white;
+  }
+
+  .plan-grid {
+    display: grid;
+    grid-template-columns: 180px;
+    grid-template-rows: 110px 110px 110px;
+    gap: 15px;
+  }
+
+  .plan-item h3 {
+    margin: 0 0 10px 0;
+    color: white;
+  }
+
+  .plan-item p {
+    margin: 0;
+    color: #dddddd;
   }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>모임 찾기</h1>
+  <h1 onclick="goMain()">모임 찾기</h1>
   <button onmouseover="Onmousein(this)" onmouseout="Onmouseout(this)">마이페이지</button>
 </header>
 
 <div class="container">
     <div class="top-controls">
         <div class="group-top">
-            <h1>모임 이름</h1>
+            <h1 id="groupNameTitle">모임 이름</h1>
             <button id="actionBtn" onmouseover="Onmousein(this)" onmouseout="Onmouseout(this)">버튼</button>
         </div>
     </div>
@@ -167,14 +268,33 @@
     <div class="noticeboard">
         <div class="people">
             <h3>인원</h3>
+            <p id="groupPeople" style="color:white; margin-top:10px;">모임 인원</p>
         </div>
         <div class="note">
             <h3>의견</h3>
         </div>
         <div class="plan">
-            <h3>일정</h3>
+
+          <div class="plan-grid">
+
+            <div class="plan-item">
+                <h3>시간</h3>
+                <p id="planTime">--:--</p>
+            </div>
+
+            <div class="plan-item">
+                <h3>장소</h3>
+                <p id="planLocation">장소 미정</p>
+            </div>
+
+            <div class="plan-item">
+                <h3>날짜</h3>
+                <p id="planDate">YYYY-MM-DD</p>
+            </div>
+
+          </div>
         </div>
-    </div>
+    </div> 
 </div>
 
 </body>

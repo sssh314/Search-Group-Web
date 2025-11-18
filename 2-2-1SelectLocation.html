@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <script 
+        defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgZb5wneiMCrcq4LkvGIr0W1nvAwwn4Xs&callback=initMap"></script>
+    <script>
+        function goBack() {
+            // 이전 페이지로 돌아가기 전에 선택 정보 저장
+            const address = document.getElementById("location").value;
+            if(address) {
+                localStorage.setItem("selected_group_location", address);
+            }
+            // 이전 페이지로 이동
+            window.history.back(); // 또는 location.href = '2-2CreateGroup-Main.html';
+        }
+        function initMap(){
+            const map = new google.maps.Map(document.getElementById("map-place"), {
+                center: { lat: 37.5665, lng: 126.9780 },
+                zoom: 15
+            });
+            const geocoder = new google.maps.Geocoder();
+            let marker;
+
+            map.addListener("click", (e) => {
+                if(!marker) marker = new google.maps.Marker({ position: e.latLng, map: map });
+                else marker.setPosition(e.latLng);
+
+                geocoder.geocode({ location: e.latLng }, (results, status) => {
+                    if(status === "OK" && results[0]){
+                        const address = results[0].formatted_address;
+
+                        // 주소를 input에 표시
+                        document.getElementById("location").value = address;
+
+                        // localStorage에 저장
+                        localStorage.setItem("selected_group_location", address);
+                        localStorage.setItem("selected_group_lat", e.latLng.lat());
+                        localStorage.setItem("selected_group_lng", e.latLng.lng());
+                    }
+                });
+            });
+        }
+    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스터디 모임 플랫폼</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #212121;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+  }
+  #map-place {
+    width: 100%;
+    flex: 1; /* 화면의 남은 공간을 채움 */
+    min-height: 400px;
+  }
+  #location {
+    width: 95%;
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 1rem;
+    color: white;
+    border: 1px solid #404040;
+    border-radius: 10px;
+    outline: none;
+    background: #303030;
+  }
+  #back-button {
+    width: 95%;
+    padding: 10px;
+    font-size: 1rem;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    background-color: #404040;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  #back-button:hover {
+    background-color: #606060;
+  }
+</style>
+</head>
+<body>
+    <div id="map-place"></div>
+    <input id="location" type="text" placeholder="선택한 장소 주소">
+    <button id="back-button" onclick="goBack()">완료</button>
+</body>
+</html>

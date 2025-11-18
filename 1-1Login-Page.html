@@ -2,19 +2,29 @@
 <html lang="ko">
 <head>
     <script>
-        function login(){
-            const id = document.querySelector('#id');
-            const pw = document.querySelector('#pw');
+        function login() {
+            const id = document.querySelector('#id').value;
+            const pw = document.querySelector('#pw').value;
 
-            const saveId = localStorage.getItem("user_id");
-            const savePw = localStorage.getItem("user_pw");
+            // 로컬스토리지에서 user 배열 가져오기
+            const users = JSON.parse(localStorage.getItem("users")) || [];
 
-            if(id.value == "" || pw.value == ""){
-                alert("로그인 실패")
-            }else if(id.value == saveId && pw.value == savePw){
+            if(id === "" || pw === "") {
+                alert("로그인 실패: 입력되지 않은 항목이 있습니다.");
+                return;
+            }
+
+            // 배열에서 id와 pw가 일치하는 사용자 찾기
+            //u => u.id === id로 입력한 id와 배열의 id가 일치하는지 확인 
+            const foundUser = users.find(u => u.id === id && u.pw === pw);
+
+            if(foundUser) {
+                // 로그인 성공하면 user_id, user_name 저장 (현재 로그인 상태)
+                localStorage.setItem("user_id", foundUser.id);
+                localStorage.setItem("user_name", foundUser.name);
                 location.href = '2-1Search-Main.html';
-            }else{
-                alert("아이디 또는 비밀번호가 올바르지 않습니다.")
+            } else {
+                alert("아이디 또는 비밀번호가 올바르지 않습니다.");
             }
         }
         function createID(){

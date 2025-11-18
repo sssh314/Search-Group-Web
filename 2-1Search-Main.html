@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+  <script defer src="./index.js"></script>
+  <script
+    defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgZb5wneiMCrcq4LkvGIr0W1nvAwwn4Xs&callback=initAllMaps"
+  ></script>
     <script>
         function Onmousein(button){
             button.style.backgroundColor = "#404040";
@@ -11,35 +16,85 @@
         function cardmouseout(button){
             button.style.backgroundColor = "#171717";
         }
-
+        function goMain(){
+          location.href = "2-1Search-Main.html";
+        }
         function createGroup(){
           location.href = '2-2CreateGroup-Main.html';
         }
 
-        window.onload = function(){
+        document.addEventListener("DOMContentLoaded", function() {
+          //console.log("DOM 완전히 로드됨");
           //페이지 하단 이름 
-          const userName = localStorage.getItem("user_name");
           const footerText = document.getElementById("footer-user");
 
-          if(userName){
-              footerText.textContent = `사용자: ${userName}`;
+          // 현재 로그인한 user_id 가져오기
+          const currentUserId = localStorage.getItem("user_id");
+
+          // users 배열 가져오기
+          const users = JSON.parse(localStorage.getItem("users")) || [];
+          if (typeof users === "string") {
+              users = JSON.parse(users);
+          }
+
+          // user_id와 일치하는 user 객체 찾기
+          const currentUser = users.find(u => u.id.toString() === currentUserId);
+
+          if(currentUser){
+              footerText.textContent = `사용자: ${currentUser.name}`;
           } else {
               footerText.textContent = "로그인 정보 없음";
           }
           
           //그룹 카드 
-          const groupData = JSON.parse(localStorage.getItem("created_group"));
+          const groups = JSON.parse(localStorage.getItem("groups")) || [];
           const groupList = document.querySelector(".group-list");
-          groupList.innerHTML = ""; //기존 카드 제거 
+          groupList.innerHTML = ""; // 기존 카드 제거
 
-          if(groupData){
-            const card = document.createElement("div");
-            card.className = "group-card";
-            card.innerHTML = `<h3>${groupData.name}</h3>
-                              <p>${groupData.day} ${groupData.time}, ${groupData.place}</p>`;
-            groupList.appendChild(card);                 
+          function renderGroups(filteredGroups){
+            groupList.innerHTML = ""; //초기화
+            if(filteredGroups.length === 0){
+              groupList.innerHTML = "<p style='color:white;'>검색 결과가 없습니다.</p>";
+              return;
+            }
+            filteredGroups.forEach(g => {
+              const card = document.createElement("div");
+              card.className = "group-card";
+
+              card.innerHTML = `
+                  <h3>${g.name}</h3>
+                  <p>${g.date}, ${g.time}</p>
+                  <p>${g.location}</p>
+              `;
+
+              // 카드를 클릭하면 해당 모임 페이지로 이동 
+              card.onclick = () => {
+                location.href = `3-1Group-Main.html?group_id=${g.id}`;
+              };
+
+              groupList.appendChild(card);
+            });
           }
-        };
+
+          //초기 렌더링 
+          renderGroups(groups);
+          
+          //검색 
+          const searchInput = document.querySelector(".search-box input");
+          const searchButton = document.querySelector(".search-box button");
+
+          function performSearch(){
+            const keyword = searchInput.value.trim().toLowerCase();
+            if(!keyword){
+              renderGroups(groups);
+              return;
+            }
+            const filteredGroups = groups.filter(g => g.name.toLowerCase().includes(keyword));
+            renderGroups(filteredGroups);
+          }
+
+          searchButton.addEventListener("click", performSearch);
+        });
 
     </script>
 <meta charset="UTF-8">
@@ -63,7 +118,7 @@
 
   header h1 {
     margin: 0;
-    
+    cursor: pointer;
   }
 
   header button {
@@ -158,20 +213,38 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    text-align: left;
-    color: #b0b0b0;
-    padding: 15px;
+    color: white;
+    padding: 15px 20px;
     font-size: 0.9rem;
     background-color: #171717;
     border-top: 1px solid #303030;
+    box-sizing: border-box;
   }
 
+  .footer-row{
+    display: flex;
+    justify-content: space-between; /*좌우 배치 */
+    align-items: center; /* 세로 중앙 정렬 */
+    gap: 12px;
+  }
+
+  #footer-user{
+    flex: 0 0 auto; 
+  }
+
+  #user-address {
+    flex: 1 1 auto;
+    min-width: 0;  /* 텍스트 잘림 방지 */
+    overflow: hidden;
+    text-overflow: ellipsis; /* .......으로 변경  */ 
+    white-space: nowrap;  /* 한줄로 */
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>모임 찾기</h1>
+  <h1 onclick="goMain()">모임 찾기</h1>
   <button id="myBtn" onmouseover="Onmousein(this)" onmouseout="Onmouseout(this)">마이페이지</button>
 </header>
 
@@ -187,12 +260,18 @@
   </div>
 
   <div class="group-list">
-    
   </div>
 </div>
 
+<div id="map-user"></div>
+
 <footer>
-  <span id="footer-user">로그인 정보 없음</span>
+  <div class="footer-row">
+    <span id="user-address" style="color: white; margin: 20px 0;">
+      사용자 위치를 가져오는 중...</span>
+    
+    <span id="footer-user">로그인</span>
+  </div>
 </footer>
 
 </body>

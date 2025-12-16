@@ -62,6 +62,11 @@
             document.getElementById("planTime").textContent = groupData.time;
             document.getElementById("planLocation").textContent = groupData.location;
             document.getElementById("planDate").textContent = groupData.date;
+            document.getElementById("groupNotice").textContent =
+              groupData.notice && groupData.notice.trim()
+                ? groupData.notice
+                : "공지사항이 없습니다.";
+
 
             //인원 표시 
             const groupPeopleDiv = document.getElementById("groupPeople");
@@ -119,6 +124,54 @@
 
           }
           updateButton();
+          // 댓글 배열 초기화
+          if (!Array.isArray(groupData.comments)) {
+            groupData.comments = [];
+          }
+
+          // 댓글 렌더링
+          function renderComments() {
+            const commentList = document.getElementById("commentList");
+            commentList.innerHTML = "";
+
+            if (groupData.comments.length === 0) {
+              commentList.innerHTML = "<p style='color:#909090;'>댓글이 없습니다.</p>";
+              return;
+            }
+
+            groupData.comments.forEach(c => {
+              const div = document.createElement("div");
+              div.textContent = `${c.user}: ${c.text}`;
+              div.style.background = "#404040";
+              div.style.color = "white";
+              div.style.padding = "8px";
+              div.style.borderRadius = "8px";
+              div.style.marginBottom = "6px";
+              commentList.appendChild(div);
+            });
+          }
+
+          // 댓글 추가
+          window.addComment = function () {
+            const input = document.getElementById("commentInput");
+            const text = input.value.trim();
+
+            if (!text) return;
+
+            groupData.comments.push({
+              user: userName,
+              text: text,
+              time: Date.now()
+            });
+
+            saveGroups();
+            input.value = "";
+            renderComments();
+          };
+
+          // 최초 렌더링
+          renderComments();
+
         };
     </script>
 <meta charset="UTF-8">
@@ -196,6 +249,13 @@
     margin-top: 0;
     color: white;
   }
+  .notice-text {
+    font-size: 0.85rem;
+    color: #bdbdbd;
+    margin-top: 8px;
+    white-space: pre-wrap; /* 줄바꿈 유지 */
+  }
+
   .noticeboard{
     display: grid;
     grid-template-columns: 200px 1fr 200px;
@@ -212,16 +272,61 @@
     margin-top: 0;
     color: white;
   }
-  .note{
+  .note {
     background-color: #171717;
     border-radius: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     padding: 15px;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* 부모(grid)에 맞춤 */
   }
   .note h3{
     margin-top: 0;
     color: white;
   }
+  /* 댓글 목록 영역 */
+  .comment-box {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    padding-right: 5px;
+  }
+
+  /* 댓글 하나 */
+  .comment-box div {
+    background-color: #404040;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+  }
+
+  /* 입력 영역 */
+  .comment-input {
+    display: flex;
+    gap: 8px;
+  }
+
+  .comment-input input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #404040;
+    background: #303030;
+    color: white;
+    outline: none;
+  }
+
+  .comment-input button {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    background: #404040;
+    color: white;
+    cursor: pointer;
+  }
+
   .plan {
     background-color: #171717;
     border-radius: 15px;
@@ -263,8 +368,10 @@
         </div>
     </div>
     <div class="announcement">
-        <p>공지사항</p>
+      <p>공지사항</p>
+      <p id="groupNotice" class="notice-text"></p>
     </div>
+
     <div class="noticeboard">
         <div class="people">
             <h3>인원</h3>
@@ -272,7 +379,17 @@
         </div>
         <div class="note">
             <h3>의견</h3>
+
+            <!-- 댓글 목록 -->
+            <div class="comment-box" id="commentList"></div>
+
+            <!-- 댓글 입력 -->
+            <div class="comment-input">
+                <input id="commentInput" type="text" placeholder="댓글을 입력하세요">
+                <button onclick="addComment()">등록</button>
+            </div>
         </div>
+
         <div class="plan">
 
           <div class="plan-grid">

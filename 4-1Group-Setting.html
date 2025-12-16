@@ -48,7 +48,7 @@
             document.querySelector(".group-time input").value = groupData.time || "";
             document.querySelector(".group-date input").value = groupData.date || "";
             document.querySelector(".group-location input").value = groupData.location || "";
-            document.querySelector(".group-tag input").value = groupData.tag || "";
+            document.getElementById("group-notice").value = groupData.notice || "";
         }
 
         // 저장 
@@ -67,7 +67,9 @@
             const time = document.querySelector(".group-time input").value.trim();
             const date = document.querySelector(".group-date input").value.trim();
             const location = document.querySelector(".group-location input").value.trim();
-            const tag = document.querySelector(".group-tag input").value.trim();
+            const notice = document.getElementById("group-notice").value.trim();
+            
+
 
             if(!name || !maxPeople || !time || !date || !location){
                 alert("모든 필드를 입력해주세요!");
@@ -83,7 +85,7 @@
             groupData.time = time;
             groupData.date = date; 
             groupData.location = location; 
-            groupData.tag = tag;
+            groupData.notice = notice;
 
             
 
@@ -325,8 +327,11 @@
         </div>
       </div>
       <div class="group-tag">
-        <h3>모임 태그</h3>
-        <input type="text"> 
+        <h3>공지사항</h3>
+        <textarea id="group-notice" rows="4"
+          style="width:98%; background:#303030; color:white;
+                border:1px solid #404040; border-radius:10px;
+                padding:10px; resize:none;"></textarea>
       </div>
     </div>
 </div>

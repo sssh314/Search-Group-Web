@@ -25,7 +25,6 @@
             const time = document.querySelector(".group-time input").value.trim();
             const date = document.querySelector(".group-date input").value.trim();
             const location = document.querySelector(".group-location input").value.trim();
-            const tag = document.querySelector(".group-tag input").value.trim();
 
             if(!name || !maxPeople || !time || !date || !location){
                 alert("모든 필드를 입력해주세요!");
@@ -36,8 +35,13 @@
                 return;
             }
 
+            const userName = localStorage.getItem("user_name") || "";
+
+            
+
             const groupData = { 
-                name, people: [], maxPeople, time, date, location, tag,
+                name, people: userName ? [userName] : [],
+                maxPeople, time, date, location,
                 lat: localStorage.getItem("selected_group_lat") || "",
                 lng: localStorage.getItem("selected_group_lng") || "",
                 creatorId: localStorage.getItem("user_id") || "",
@@ -231,26 +235,6 @@
     background: #303030;
     width: 98%;
   }
-  .group-tag{
-    margin-bottom: 30px;
-    background-color: #171717;
-    border-radius: 15px;
-    padding: 15px;
-  }
-  .group-tag h3{
-    margin-top: 0;
-  }
-  .group-tag input{
-    flex: 1;
-    padding: 10px;
-    font-size: 1rem;
-    color: white;
-    border: 1px solid #404040;
-    border-radius: 10px;
-    outline: none;
-    background: #303030;
-    width: 98%;
-  }
 </style>
 </head>
 <body>
@@ -293,10 +277,6 @@
             <input type="text" id="group-location-input" placeholder="장소 선택" readonly style="flex:1;">
             <button onclick="selectLocation()" style="padding:10px; border-radius:10px; border:none; background:#404040; color:white; cursor:pointer;">장소 선택</button>
         </div>
-      </div>
-      <div class="group-tag">
-        <h3>모임 태그</h3>
-        <input type="text"> 
       </div>
     </div>
 </div>

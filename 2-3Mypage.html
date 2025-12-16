@@ -8,6 +8,72 @@
         function Onmouseout(button){
             button.style.backgroundColor = "#212121";
         }
+        function goMain(){
+          location.href = "2-1Search-Main.html";
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+
+          const userName = document.getElementById("userName");
+          
+          // 로그인된 user_id를 가져옴 
+          const currentUserId = localStorage.getItem("user_id");
+
+          // users 배열 가져오기
+          const users = JSON.parse(localStorage.getItem("users")) || [];
+          if (typeof users === "string") {
+              users = JSON.parse(users);
+          }
+
+          // user_id와 일치하는 user 객체 찾기
+          const currentUser = users.find(u => u.id.toString() === currentUserId);
+
+          if(currentUser){
+              userName.textContent = `사용자: ${currentUser.name}`;
+          }
+
+          //그룹 카드 
+          const groups = JSON.parse(localStorage.getItem("groups")) || [];
+
+          // 현재 로그인한 사용자 이름
+          const currentUserName = currentUser?.name;
+
+          const joinGroup = document.querySelector(".join-group");
+
+          function renderGroups(filteredGroups){
+            joinGroup.innerHTML = "";
+            if(filteredGroups.length === 0){
+              joinGroup.innerHTML = "<p style='color:white;'>가입된 모임이 없습니다.</p>";
+              return;
+            }
+
+            filteredGroups.forEach(g => {
+              const card = document.createElement("div");
+              card.className = "group-card";
+
+              card.innerHTML = `
+                <h3>${g.name}</h3>
+                <p>${g.date}, ${g.time}</p>
+                <p>${g.location}</p>
+              `;
+
+              card.onclick = () => {
+                location.href = `3-1Group-Main.html?group_id=${g.id}`;
+              };
+
+              joinGroup.appendChild(card);
+            });
+          }
+
+          // 내가 가입한 그룹만 필터링
+          const joinedGroups = groups.filter(g =>
+            Array.isArray(g.people) && g.people.includes(currentUserName)
+          );
+
+          // 렌더링
+          renderGroups(joinedGroups);
+
+        });
+
     </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,7 +96,7 @@
 
   header h1 {
     margin: 0;
-    
+    cursor: pointer;
   }
   .container {
     max-width: 1000px;
@@ -54,44 +120,50 @@
     margin: 0;
   }
   .mypage-main{
+    color: white;
     margin-bottom: 30px;
     background-color: #171717;
     border-radius: 15px;
     padding: 40px;
-    display: grid;
-    grid-template-columns: 200px 1fr 200px;
-    grid-template-rows: 100px;
-    gap: 20px;
-  }
-  .profil-image{
-    margin-bottom: 30px;
-    background-color: #ffffff;
-    border-radius: 15px;
-    padding: 15px;
-  }
-  .profil-name{
-    margin-bottom: 30px;
-    background-color: #ffffff;
-    border-radius: 15px;
-    padding-left: 20px;
   }
   .profile-name h2{
     margin-top: 0;
   }
   .mypage-group{
+    color: white;
     margin-bottom: 30px;
     background-color: #171717;
     border-radius: 15px;
-    padding-left: 20px;
+    padding: 20px;
+  }
+  .group-list {
     display: grid;
-    grid-template-rows: 400px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+
+  .group-card {
+    background-color: #212121;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin: 20px;
+  }
+
+  .group-card h3 {
+    margin-top: 0;
+    color: #ffffff;
+  }
+
+  .group-card p {
+    color: #909090;
   }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>모임 찾기</h1>
+  <h1 onclick="goMain()">모임 찾기</h1>
 </header>
 
 <div class="container">
@@ -101,15 +173,12 @@
         </div>
     </div>
     <div class="mypage-main">
-        <div class="profil-image">
-            <input type="image">
-        </div>
-        <div class="profil-name">
-            <h2>내 이름</h2>
-        </div>
+            <h1 id="userName"></h2>
     </div>
     <div class="mypage-group">
-        <h2>내 모임</h2>
+        <h2>가입된 모임</h2>
+        <div class="join-group">
+        </div>
     </div>
 </div>
 </body>
